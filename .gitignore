@@ -49,4 +49,4 @@ po/*~
 rsconnect/
 
 # R project file
-.Rproj
+*.Rproj
