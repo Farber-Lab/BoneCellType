@@ -50,3 +50,5 @@ rsconnect/
 
 # R project file
 BoneCellType.Rproj
+
+.DS_Store
