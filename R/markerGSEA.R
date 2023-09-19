@@ -4,16 +4,19 @@
 #
 #' @param varMarkers A data.frame containing variable markers for each cluster
 #'  as reported by \code{FindAllMarkers} function from Seurat package.
+#' @param markers Optional user provided named list with markers.
 #' @param systemLevel Optional string specifying on which systematic level to
 #'  perform enrichment, options: "cellType" or "tissue". Default: "cellType".
+#'  Use only when not providing your own markers variable.
 #' @param byDatabase Optional logical variable specifying if enrichment should
 #'  be performed separately for each database (i.e. source  from which markers
 #'  were obtained): option TRUE (default). Or if the database column in
 #'  \code{markerDatabase} should be ignored and enrichment is done on all
-#'  available markers for a given cellType or tissue: option FALSE.
-#' @param minSize Number specifying a minimal number of markers within a
-#'  marker set to be considered (defaults to 5).
-#' @param maxSize Number specifying a maximal number of markers within a
+#'  available markers for a given cellType or tissue: option FALSE. Use only
+#'  when not providing your own markers variable.
+#' @param minSize Optional number specifying a minimal number of markers within
+#'  a marker set to be considered (defaults to 5).
+#' @param maxSize Optional umber specifying a maximal number of markers within a
 #'  marker set to be considered (defaults to 50000).
 #' @return data.frame
 #'
@@ -23,31 +26,41 @@
 #'                             package = "BoneCellType")
 #' varMarkers = read.csv(varMarkerFile)
 #' GSEAres = markerGSEA(varMarkers)
+#'
+#' # use own markers
+#' markerList = cellType_list
+#' GSEAresCustom = markerGSEA(varMarkers, markers=cellType_list)
 markerGSEA = function(varMarkers,
+                      markers=NULL,
                       systemLevel="cellType",
                       byDatabase=TRUE,
                       minSize = 5,
                       maxSize = 50000){
   # load marked database based on input criteria
-  if (systemLevel == "cellType"){
+  if (is.null(markers)) {
+    if (systemLevel == "cellType"){
 
-    if (byDatabase){
-      markers = cellTypeSource_list
+      if (byDatabase){
+        markers = cellTypeSource_list
+      } else {
+        markers = cellType_list
+      }
+
+    } else if (systemLevel == "tissue"){
+
+      if (byDatabase){
+        markers = tissueSource_list
+      } else {
+        markers = tissue_list
+      }
+
     } else {
-      markers = cellType_list
+      stop("Wrong input: systemLevel must be either cellType or tissue.")
     }
-
-  } else if (systemLevel == "tissue"){
-
-    if (byDatabase){
-      markers = tissueSource_list
-    } else {
-      markers = tissue_list
-    }
-
-  } else {
-    stop("Wrong input: systemLevel must be either cellType or tissue.")
+  } else if (!is.list(markers)){
+    stop("Wrong input: markers must be a list.")
   }
+
 
   # go through clusters in varMarkers and for each run GSEA
   for (i in unique(varMarkers$cluster)){

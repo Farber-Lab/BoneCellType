@@ -4,8 +4,8 @@
 #
 #' @param varMarkers A data.frame containing variable markers for each cluster
 #'  as reported by \code{FindAllMarkers} function from Seurat package.
-#' @param markerDatabase A data.frame containing bone-specific markers. The
-#'  data.frame should contain following columns: tissue (specifies tissue),
+#' @param markerDB Optional data.frame containing cell type-specific markers.
+#'  The data.frame should contain following columns: tissue (specifies tissue),
 #'  cellType (specifies cell type), gene (contains markers), database (specifies
 #'  source from which markers were obtained)
 #' @param systemLevel Optional string specifying on which systematic level to
@@ -13,7 +13,7 @@
 #' @param byDatabase Optional logical variable specifying if enrichment should
 #'  be performed separately for each database (i.e. source  from which markers
 #'  were obtained): option TRUE (default). Or if the database column in
-#'  \code{markerDatabase} should be ignored and enrichment is done on all
+#'  \code{markerDB} should be ignored and enrichment is done on all
 #'  available markers for a given cellType or tissue: option FALSE.
 #' @param topN Optional integer specifying how many top variable markers per
 #'  cluster should be used for the enrichment analysis. Default: all variable
@@ -34,14 +34,18 @@
 #' varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
 #'                             package = "BoneCellType")
 #' varMarkers = read.csv(varMarkerFile)
-#' markerDatabase = markerDatabase
-#' enrichRes = markerEnrich(varMarkers, markerDatabase)
+#' enrichRes = markerEnrich(varMarkers)
 markerEnrich = function(varMarkers,
-                        markerDatabase,
+                        markerDB=NULL,
                         systemLevel="cellType",
                         byDatabase=TRUE,
                         topN=Inf,
                         sortBy="log2FC"){
+  if (is.null(markerDB)){
+    markerDB = markerDatabase
+  } else if (!is.data.frame(markerDB)){
+    stop("Wrong input: markerDB must be a data.frame.")
+  }
 
   # if topN was specified filter topN variable markers based on selected
   # criteria
@@ -59,14 +63,14 @@ markerEnrich = function(varMarkers,
         top_n(n = topN, wt = avg_log2FC)
 
     } else {
-      stop("Wrong input: sortBy must be either padj or log2FC")
+      stop("Wrong input: sortBy must be either padj or log2FC.")
     }
 
   }
 
   # get marker universe = all unique genes (= markers) in variable markers and
   # bone maker database
-  geneUniverse = unique(c(varMarkers$gene, markerDatabase$gene))
+  geneUniverse = unique(c(varMarkers$gene, markerDB$gene))
 
   # Create "testTable" from marker table based on systemLevel and byDatabase
   # input. testTable groups markers into subgroups based on these settings
@@ -74,12 +78,12 @@ markerEnrich = function(varMarkers,
 
     # and group by database?
     if (byDatabase){
-      testTable = markerDatabase %>%
+      testTable = markerDB %>%
         select(tissue, database, gene) %>%
         distinct() %>%
         mutate(myGroup = paste(tissue, database, sep = "__"))
     } else {
-      testTable = markerDatabase %>%
+      testTable = markerDB %>%
         select(tissue, gene) %>%
         distinct() %>%
         mutate(myGroup = tissue)
@@ -89,12 +93,12 @@ markerEnrich = function(varMarkers,
 
     # and group by database?
     if (byDatabase){
-      testTable = markerDatabase %>%
+      testTable = markerDB %>%
         select(cellType, database, gene) %>%
         distinct() %>%
         mutate(myGroup = paste(cellType, database, sep = "__"))
     } else {
-      testTable = markerDatabase  %>%
+      testTable = markerDB  %>%
         select(cellType, gene) %>%
         distinct() %>%
         mutate(myGroup = cellType)
@@ -222,8 +226,7 @@ markerEnrich = function(varMarkers,
 #' #' varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
 #' #'                             package = "BoneCellType")
 #' #' varMarkers = read.csv(varMarkerFile)
-#' #' markerDatabase = markerDatabase
-#' #' enrichRes = markerEnrich(varMarkers, markerDatabase)
+#' #' enrichRes = markerEnrich(varMarkers)
 #' #' plotMarkerEnrich(enrichRes)
 #' plotMarkerEnrich = function(enrichRes){
 #'

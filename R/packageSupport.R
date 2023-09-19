@@ -17,5 +17,5 @@
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(c(
     "avg_log2FC", "cluster", "gene", "myGroup", "padj", "cellTypeSource_list",
-    "cellType_list", "tissueSource_list", "tissue_list"))
+    "cellType_list", "tissueSource_list", "tissue_list", "markerDatabase"))
 }

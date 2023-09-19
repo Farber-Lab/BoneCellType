@@ -8,6 +8,7 @@ database.}
 \usage{
 markerGSEA(
   varMarkers,
+  markers = NULL,
   systemLevel = "cellType",
   byDatabase = TRUE,
   minSize = 5,
@@ -18,19 +19,23 @@ markerGSEA(
 \item{varMarkers}{A data.frame containing variable markers for each cluster
 as reported by \code{FindAllMarkers} function from Seurat package.}
 
+\item{markers}{Optional user provided named list with markers.}
+
 \item{systemLevel}{Optional string specifying on which systematic level to
-perform enrichment, options: "cellType" or "tissue". Default: "cellType".}
+perform enrichment, options: "cellType" or "tissue". Default: "cellType".
+Use only when not providing your own markers variable.}
 
 \item{byDatabase}{Optional logical variable specifying if enrichment should
 be performed separately for each database (i.e. source  from which markers
 were obtained): option TRUE (default). Or if the database column in
 \code{markerDatabase} should be ignored and enrichment is done on all
-available markers for a given cellType or tissue: option FALSE.}
+available markers for a given cellType or tissue: option FALSE. Use only
+when not providing your own markers variable.}
 
-\item{minSize}{Number specifying a minimal number of markers within a
-marker set to be considered (defaults to 5).}
+\item{minSize}{Optional number specifying a minimal number of markers within
+a marker set to be considered (defaults to 5).}
 
-\item{maxSize}{Number specifying a maximal number of markers within a
+\item{maxSize}{Optional umber specifying a maximal number of markers within a
 marker set to be considered (defaults to 50000).}
 }
 \value{
@@ -46,4 +51,8 @@ varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
                             package = "BoneCellType")
 varMarkers = read.csv(varMarkerFile)
 GSEAres = markerGSEA(varMarkers)
+
+# use own markers
+markerList = cellType_list
+GSEAresCustom = markerGSEA(varMarkers, markers=cellType_list)
 }

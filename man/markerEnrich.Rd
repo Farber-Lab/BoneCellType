@@ -8,7 +8,7 @@ database.}
 \usage{
 markerEnrich(
   varMarkers,
-  markerDatabase,
+  markerDB = NULL,
   systemLevel = "cellType",
   byDatabase = TRUE,
   topN = Inf,
@@ -19,8 +19,8 @@ markerEnrich(
 \item{varMarkers}{A data.frame containing variable markers for each cluster
 as reported by \code{FindAllMarkers} function from Seurat package.}
 
-\item{markerDatabase}{A data.frame containing bone-specific markers. The
-data.frame should contain following columns: tissue (specifies tissue),
+\item{markerDB}{Optional data.frame containing cell type-specific markers.
+The data.frame should contain following columns: tissue (specifies tissue),
 cellType (specifies cell type), gene (contains markers), database (specifies
 source from which markers were obtained)}
 
@@ -30,7 +30,7 @@ perform enrichment, options: "cellType" or "tissue". Default: "cellType".}
 \item{byDatabase}{Optional logical variable specifying if enrichment should
 be performed separately for each database (i.e. source  from which markers
 were obtained): option TRUE (default). Or if the database column in
-\code{markerDatabase} should be ignored and enrichment is done on all
+\code{markerDB} should be ignored and enrichment is done on all
 available markers for a given cellType or tissue: option FALSE.}
 
 \item{topN}{Optional integer specifying how many top variable markers per
@@ -59,6 +59,5 @@ database.
 varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
                             package = "BoneCellType")
 varMarkers = read.csv(varMarkerFile)
-markerDatabase = markerDatabase
-enrichRes = markerEnrich(varMarkers, markerDatabase)
+enrichRes = markerEnrich(varMarkers)
 }
