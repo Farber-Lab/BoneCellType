@@ -83,6 +83,14 @@ markerGSEA = function(varMarkers,
 
   }
 
+  # unlist the genes into a comma separated string
+  leadingEdge = c()
+  for (i in seq(results$leadingEdge)){
+    LE = paste(unlist(results$leadingEdge[[i]]), collapse = ",")
+    leadingEdge = c(leadingEdge, LE)
+  }
+  results$leadingEdge = leadingEdge
+
   return(results)
 
 }
