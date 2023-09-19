@@ -3,7 +3,7 @@
 #' database.
 #
 #' @param varMarkers A data.frame containing variable markers for each cluster
-#' as reported by \code{FindAllMarkers} function from Seurat package.
+#'  as reported by \code{FindAllMarkers} function from Seurat package.
 #' @param markerDatabase A data.frame containing bone-specific markers. The
 #'  data.frame should contain following columns: tissue (specifies tissue),
 #'  cellType (specifies cell type), gene (contains markers), database (specifies
@@ -35,7 +35,7 @@
 #'                             package = "BoneCellType")
 #' varMarkers = read.csv(varMarkerFile)
 #' markerDatabase = markerDatabase
-#' enrichment = markerEnrich(varMarkers, markerDatabase)
+#' enrichRes = markerEnrich(varMarkers, markerDatabase)
 markerEnrich = function(varMarkers,
                         markerDatabase,
                         systemLevel="cellType",
@@ -101,7 +101,7 @@ markerEnrich = function(varMarkers,
     }
 
   } else {
-    stop("Wrong input: systemLevel must be either cellType or tissue")
+    stop("Wrong input: systemLevel must be either cellType or tissue.")
   }
 
   # calculate enrichment per cluster and per marker group (i.e. per previously
@@ -139,9 +139,9 @@ markerEnrich = function(varMarkers,
 
       # perform Fisher's test
       deTable = matrix(c(a, b, c, d),
-                         nrow = 2,
-                         dimnames = list(marker=c("yes","no"),
-                                         cluster=c("yes","no")))
+                       nrow = 2,
+                       dimnames = list(marker=c("yes","no"),
+                                       cluster=c("yes","no")))
       FT = fisher.test(deTable, alternative = "greater")
 
       # put result into a data.frame
@@ -209,8 +209,23 @@ markerEnrich = function(varMarkers,
     mutate(neg_log10_padj = -log10(padj))
 
   return(FisherTable)
-
 }
 
-
+#' #' The function plotMarkerEnrich plots results from \code{markerEnrich} function
+#' #
+#' #' @param enrichRes An output from \code{markerEnrich} function in form of
+#' #'  data.frame
+#' #' @return A ggplot object
+#' #'
+#' #' @export
+#' #' @examples
+#' #' varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
+#' #'                             package = "BoneCellType")
+#' #' varMarkers = read.csv(varMarkerFile)
+#' #' markerDatabase = markerDatabase
+#' #' enrichRes = markerEnrich(varMarkers, markerDatabase)
+#' #' plotMarkerEnrich(enrichRes)
+#' plotMarkerEnrich = function(enrichRes){
+#'
+#' }
 

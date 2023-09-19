@@ -60,5 +60,5 @@ varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
                             package = "BoneCellType")
 varMarkers = read.csv(varMarkerFile)
 markerDatabase = markerDatabase
-enrichment = markerEnrich(varMarkers, markerDatabase)
+enrichRes = markerEnrich(varMarkers, markerDatabase)
 }

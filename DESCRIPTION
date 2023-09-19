@@ -9,11 +9,14 @@ Authors@R:
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+biocViews: DifferentialExpression, GeneExpression,
+  GeneSetEnrichment, Pathways, Software
 Depends: 
     R (>= 2.10)
 Imports:
     dplyr,
-    ggplot2
+    ggplot2,
+    fgsea
 Suggests:
     rmarkdown,
     knitr
