@@ -215,20 +215,73 @@ markerEnrich = function(varMarkers,
   return(FisherTable)
 }
 
-#' #' The function plotMarkerEnrich plots results from \code{markerEnrich} function
-#' #
-#' #' @param enrichRes An output from \code{markerEnrich} function in form of
-#' #'  data.frame
-#' #' @return A ggplot object
-#' #'
-#' #' @export
-#' #' @examples
-#' #' varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
-#' #'                             package = "BoneCellType")
-#' #' varMarkers = read.csv(varMarkerFile)
-#' #' enrichRes = markerEnrich(varMarkers)
-#' #' plotMarkerEnrich(enrichRes)
-#' plotMarkerEnrich = function(enrichRes){
+#' The function plotMarkerEnrich plots results from \code{markerEnrich} function
+#
+#' @param enrichRes An output from \code{markerEnrich} function in form of a
+#'  data.frame.
+#' @param topN And optional parameter specifying the number of the most
+#'  significant results (based on p-value) to be plotted per cluster.
+#' @return A ggplot object
 #'
-#' }
+#' @export
+#' @examples
+#' varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
+#'                             package = "BoneCellType")
+#' varMarkers = read.csv(varMarkerFile)
+#' enrichRes = markerEnrich(varMarkers)
+#' \dontrun{
+#' plotMarkerEnrich(enrichRes)}
+plotMarkerEnrich = function(enrichRes,
+                            topN=Inf){
+  # first make sure that enrichRes object is sorted
+  enrichRes = enrichRes %>%
+    arrange(cluster, padj)
+
+  # create plot label based on available columns
+  if ("cellType" %in% colnames(enrichRes)){
+
+    if ("database" %in% colnames(enrichRes)){
+      enrichRes = enrichRes %>%
+        mutate(label = paste(cluster, cellType, database, sep = "__"))
+    } else {
+      enrichRes = enrichRes %>%
+        mutate(label = paste(cluster, cellType, sep = "__"))
+    }
+
+  } else if ("tissue" %in% colnames(enrichRes)){
+
+    if ("database" %in% colnames(enrichRes)){
+      enrichRes = enrichRes %>%
+        mutate(label = paste(cluster, tissue, database, sep = "__"))
+    } else {
+      enrichRes = enrichRes %>%
+        mutate(label = paste(cluster, tissue, sep = "__"))
+    }
+
+  } else {
+    stop("The object enrichRes does not contain a column cellType or tisue.")
+  }
+
+  # factorize labels to be sorted based on cluster number and adjusted
+  # p-value of enrichment
+  enrichRes$label = factor(enrichRes$label, levels = enrichRes$label)
+
+  # if topN was selected - filter out the top topN results
+  if (is.finite(topN)) {
+    enrichRes = enrichRes %>%
+      group_by(cluster) %>%
+      top_n(n = topN, wt = neg_log10_padj)
+  }
+
+  p = ggplot(enrichRes, aes(x = label,
+                            y = neg_log10_padj,
+                            fill = oddsRatio)) +
+    geom_bar(stat= "identity") +
+    geom_hline(yintercept = -log10(0.05), color = "grey80", linetype = "dashed") +
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    xlab("") +
+    ylab(bquote(-log[10](padj)))
+  return(p)
+}
 

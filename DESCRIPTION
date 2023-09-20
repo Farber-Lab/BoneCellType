@@ -2,7 +2,11 @@ Package: BoneCellType
 Version: 0.0.1
 Title: Probable cell type identification through bone-associated marker 
     enrichment
-Description: What the package does (one paragraph).
+Description: The package identifies most probable cell type of single-cell 
+    clusters based on enrichment of cluster variable markers within database
+    of bone-relevant markers. Two methods are implemented in the package - 
+    enrichment based on Fisher's exact test or enrichment based on GSEA 
+    analysis. Plotting functions are provided.
 Authors@R: 
     person("Kristyna", "Kupkova", email = "kristynakupkova@gmail.com", 
     role = c("aut", "cre"))

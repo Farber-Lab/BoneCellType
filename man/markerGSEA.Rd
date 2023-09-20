@@ -2,9 +2,9 @@
 % Please edit documentation in R/markerGSEA.R
 \name{markerGSEA}
 \alias{markerGSEA}
-\title{The function markerEnrich calculates enrichment of cluster-specific
-variable markers within  bone cell type- or bone tissue-specific marker
-database.}
+\title{The function markerGSEA calculates gene (marker) set enrichment of
+cluster-specific variable markers within  bone cell type- or bone
+tissue-specific marker database.}
 \usage{
 markerGSEA(
   varMarkers,
@@ -39,12 +39,16 @@ a marker set to be considered (defaults to 5).}
 marker set to be considered (defaults to 50000).}
 }
 \value{
-data.frame
+data.frame with following variables: pathway (name of list variable
+with markers used for GSEA) / pval (p-value) / padj (adjusted p-value) /
+log2err (log2(error)) / ES (enrichment score) / NES (normalized enrichment
+score - useful for multiple comparisons) / size (number of overlaps) /
+leadingEdge (overlapping markers) / cluster (cluster number)
 }
 \description{
-The function markerEnrich calculates enrichment of cluster-specific
-variable markers within  bone cell type- or bone tissue-specific marker
-database.
+The function markerGSEA calculates gene (marker) set enrichment of
+cluster-specific variable markers within  bone cell type- or bone
+tissue-specific marker database.
 }
 \examples{
 varMarkerFile = system.file("extdata", "cluster_variable_features.csv",

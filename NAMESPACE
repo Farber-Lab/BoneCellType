@@ -2,6 +2,8 @@
 
 export(markerEnrich)
 export(markerGSEA)
+export(plotMarkerEnrich)
+export(plotMarkerGSEA)
 import(dplyr)
 import(ggplot2)
 importFrom(fgsea,fgsea)
