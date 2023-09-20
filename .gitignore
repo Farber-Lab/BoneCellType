@@ -52,3 +52,6 @@ rsconnect/
 BoneCellType.Rproj
 
 .DS_Store
+inst/doc
+/doc/
+/Meta/

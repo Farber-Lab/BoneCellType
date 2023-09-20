@@ -26,3 +26,4 @@ Suggests:
     knitr
 LazyData: true
 License: MIT + file LICENSE
+VignetteBuilder: knitr
