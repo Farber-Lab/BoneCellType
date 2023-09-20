@@ -1,8 +1,8 @@
 ---
-title: "BoneCellType: R package for bone cell type assignment"
+title: "BoneCellType: R package for bone-relevant cell type assignment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{BoneCellType: R package for bone cell type assignment}
+  %\VignetteIndexEntry{BoneCellType: R package for bone-relevant cell type assignment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,6 +17,3 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(BoneCellType)
 ```
-
-
-Ahoj
