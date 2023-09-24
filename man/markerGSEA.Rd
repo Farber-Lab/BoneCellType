@@ -23,14 +23,14 @@ as reported by \code{FindAllMarkers} function from Seurat package.}
 
 \item{systemLevel}{Optional string specifying on which systematic level to
 perform enrichment, options: "cellType" or "tissue". Default: "cellType".
-Use only when not providing your own markers variable.}
+Use only when NOT providing your own markers variable.}
 
 \item{byDatabase}{Optional logical variable specifying if enrichment should
 be performed separately for each database (i.e. source  from which markers
 were obtained): option TRUE (default). Or if the database column in
 \code{markerDatabase} should be ignored and enrichment is done on all
 available markers for a given cellType or tissue: option FALSE. Use only
-when not providing your own markers variable.}
+when NOT providing your own markers variable.}
 
 \item{minSize}{Optional number specifying a minimal number of markers within
 a marker set to be considered (defaults to 5).}

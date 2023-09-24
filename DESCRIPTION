@@ -20,11 +20,14 @@ Depends:
 Imports:
     dplyr,
     ggplot2,
-    fgsea
+    fgsea,
+    klippy
 Suggests:
     rmarkdown,
     knitr,
     prettydoc
+Remotes:
+    rlesur/klippy
 LazyData: true
 License: MIT + file LICENSE
 VignetteBuilder: knitr

@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 ```{r klippy, echo=FALSE, include=TRUE}
 # add copy clipboard button
-klippy::klippy()
+klippy::klippy(position = "right")
 ```
 
 ```{r, echo=FALSE}
@@ -83,10 +83,10 @@ variable markers per cluster, based on practical experience, more
 reliable results can be achieved by selecting only few top markers by
 setting the parameter *topN* (as shown in the example below). Default
 mode selects the top markers based on log2FC, this can be changed by
-setting the parameter *sortBy="padj* ". Changing the *sortBy*, however,
+setting the parameter *sortBy="padj"*. Changing the *sortBy*, however,
 usually does not change much.
 
-```{r marker-overrep-top10}
+```{r marker-overrep-top10, fig.width=6, fig.height=6}
 # run overrepresentation analysis uasing top 10 variable markers (features) per cluster
 ORres = markerEnrich(varMarkers, topN = 10)
 
@@ -95,7 +95,7 @@ plotMarkerEnrich(ORres, topN = 5)
 ```
 
 The labels on the x-axis contain following information \<cluster number
-\_\_ source database \_\_ cell type\>. Dashed line indicates padj =
+\_\_ cell type \_\_ source database\>. Dashed line indicates padj =
 0.05.
 
 Let's now have a look at the format of the `markerEnrich` results.
@@ -125,3 +125,73 @@ result table, to see which markers drive associated results and if that
 cell type assignment then makes sense.
 
 # 2. Gene (marker) set enrichment analysis
+
+To perfeorm GSEA analysis (with the use of [fgsea
+package](https://bioconductor.org/packages/devel/bioc/vignettes/fgsea/inst/doc/fgsea-tutorial.html))
+use `markerGSEA` function. Similarly to `markerEnrich`a, this function
+also automatically provides a database of bone-relevant markers. Results
+can then be plotted with `plotMarkerGSEA` function, output of which is
+an editable *ggplot* object.
+
+Unlike overrepresentationa analysis, GSEA analysis (`markerGSEA` ) uses
+full list of markers associated with a given cluster sorted by
+log~2~(fold change) values. Note that the list of variable markers
+(features) per cluster is usually not very long, therefore
+overrepresentation analysis (introduced above) might be more suitable.
+
+```{r marker-GSEA, fig.width=6, fig.height=6}
+# run GSEA
+GSEAres = markerGSEA(varMarkers)
+
+# plot the top 5 most significant results
+plotMarkerGSEA(GSEAres, topN = 5)
+```
+
+The labels on the x-axis contain following information \<cluster number
+\_\_ source database \_\_ cell type\>. Dashed line indicates padj =
+0.05.
+
+Let's now have a look at the format of the `markerGSEA` results.
+
+```{r topResGSEA}
+# show top 2 significant result for each cluster
+topGSEAres = GSEAres %>% 
+  group_by(cluster) %>% 
+  top_n(n = 2, wt = -padj)
+
+topGSEAres
+```
+
+As shown, the output is a table with following variables- *pathaway*:
+defines a set of markers used for GSEA analysis / *pval*: p-value /
+*padj*: adjusted p-value / *log2err*: the expected error for the
+standard deviation of the p-value logarithm / *ES*: enrichment score /
+*NES*: normalized enrichment score /*size*: size of the pathway after
+removing genes not present in 'names(stats)' / *leadingEdge*: vector
+with indexes of leading edge genes that drive the enrichment /*cluster*:
+cluster number.
+
+**Note:** As you can see in the plot above, the results in cluster 2
+have very low significance in terms of adjusted p-value. In this case it
+might be useful to plot *NES* values instead. Let's have a look how to
+do that.
+
+```{r plot-NES, fig.width=6, fig.height=6}
+# plot the top 5 most significant results
+plotMarkerGSEA(GSEAres, topN = 5, plotNES = TRUE)
+```
+
+# Custom settings
+
+The functions presented here provide multiple options how to run
+analyses and plot the results. Additionally, users can provide their own
+sets of cell type / tissue markers (these do not have to be
+bone-related). Furthermore, the outputs of the plotting function are
+editable *ggplot* objects. In this section we will cover both of these
+options to customize provided functions.
+
+## a. Provide custom set of markers
+
+## b. Edit generated plots
+
+## 

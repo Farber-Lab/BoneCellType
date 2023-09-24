@@ -8,6 +8,7 @@
 #' @importFrom stats fisher.test p.adjust
 #' @importFrom utils globalVariables
 #' @importFrom fgsea fgsea
+#' @importFrom klippy klippy
 
 
 # Because of some issues with NOTEs on R CMD check and CRAN submission,
@@ -17,5 +18,7 @@
 if(getRversion() >= "2.15.1") {
   utils::globalVariables(c(
     "avg_log2FC", "cluster", "gene", "myGroup", "padj", "cellTypeSource_list",
-    "cellType_list", "tissueSource_list", "tissue_list", "markerDatabase"))
+    "cellType_list", "tissueSource_list", "tissue_list", "markerDatabase",
+    "cellType", "database", "tissue", "neg_log10_padj", "label", "oddsRatio",
+    "pathway", "tissue", "NES"))
 }

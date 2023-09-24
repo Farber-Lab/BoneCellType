@@ -7,13 +7,13 @@
 #' @param markers Optional user provided named list with markers.
 #' @param systemLevel Optional string specifying on which systematic level to
 #'  perform enrichment, options: "cellType" or "tissue". Default: "cellType".
-#'  Use only when not providing your own markers variable.
+#'  Use only when NOT providing your own markers variable.
 #' @param byDatabase Optional logical variable specifying if enrichment should
 #'  be performed separately for each database (i.e. source  from which markers
 #'  were obtained): option TRUE (default). Or if the database column in
 #'  \code{markerDatabase} should be ignored and enrichment is done on all
 #'  available markers for a given cellType or tissue: option FALSE. Use only
-#'  when not providing your own markers variable.
+#'  when NOT providing your own markers variable.
 #' @param minSize Optional number specifying a minimal number of markers within
 #'  a marker set to be considered (defaults to 5).
 #' @param maxSize Optional umber specifying a maximal number of markers within a
@@ -160,7 +160,7 @@ plotMarkerGSEA = function(enrichRes,
   if (plotNES) {
     p = ggplot(enrichRes, aes(x = label,
                               y = NES,
-                              fill = neg_log10_p)) +
+                              fill = neg_log10_padj)) +
       ylab("NES")
   } else {
     p = ggplot(enrichRes, aes(x = label,
