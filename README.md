@@ -9,7 +9,7 @@ devtools::install_github("Farber-Lab/BoneCellType", build_vignettes = TRUE)
 ```
 
 ## Vignette
-You can access a vignette [here](http://htmlpreview.github.io/?https://github.com/Farber-Lab/BoneCellType/blob/main/vignettes/intro_to_BoneCellType.html). Or to access the vignette from RStudio:
+To access the vignette from RStudio:
 
 ```r
 vignette("intro_to_BoneCellType", package = "BoneCellType")
