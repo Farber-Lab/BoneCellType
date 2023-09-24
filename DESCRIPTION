@@ -23,7 +23,8 @@ Imports:
     fgsea
 Suggests:
     rmarkdown,
-    knitr
+    knitr,
+    prettydoc
 LazyData: true
 License: MIT + file LICENSE
 VignetteBuilder: knitr

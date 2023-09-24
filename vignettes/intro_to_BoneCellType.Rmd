@@ -1,10 +1,19 @@
 ---
 title: "BoneCellType: R package for bone-relevant cell type assignment"
-output: rmarkdown::html_vignette
+author: Kristyna Kupkova
+date: "`r Sys.Date()`"
+#output: rmarkdown::html_vignette
+output: 
+  prettydoc::html_pretty:
+    theme: hpstr
+    toc: true
 vignette: >
+  %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{BoneCellType: R package for bone-relevant cell type assignment}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -14,6 +23,109 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r klippy, echo=FALSE, include=TRUE}
+# add copy clipboard button
+klippy::klippy()
+```
+
+```{r, echo=FALSE}
+# These settings make the vignette prettier
+knitr::opts_chunk$set(results="hold", collapse=FALSE, message=FALSE, 
+                      warning = FALSE)
+#refreshPackage("GenomicDistributions")
+#devtools::build_vignettes("code/GenomicDistributions")
+#devtools::test("code/GenomicDistributions")
+```
+
+# Introduction to BoneCellType
+
+The BoneCellType package aims to help assign cell types to single-cell
+RNA-seq clusters derived from bone samples. BoneCellType uses a
+custom-assembled database of bone-relevant markers (assembly approach
+described [here](https://github.com/kkupkova/Mouse-bone-markers)). There
+are two approaches introduced here to reach this goal: 1) marker
+overrepresentation analysis using Fisher's exact test, and 2) gene
+(marker) set enrichment analysis.
+
+**Note!** The results produced with BoneCellType do not assign
+definitive cell-type labels; only an initial prediction based on
+statistical testing and further manual curation is needed.
+
+# Setup
+
+Let's load the BoneCellType package along with a few other packages
+whose functions are used in this tutorial.
+
+The input into the functions presented here is a data.frame with
+variable markers (i.e. features) for individual clusters that can be
+obtained by using [Seurat](https://satijalab.org/seurat/) `FindMarkers`
+function. Here we provide a previously generated example dataset.
+
 ```{r setup}
 library(BoneCellType)
+library(dplyr)
+library(ggplot2)
+
+# example dataset
+varMarkerFile = system.file("extdata", "cluster_variable_features.csv", 
+                            package = "BoneCellType")
+varMarkers = read.csv(varMarkerFile, sep = ",")
+
+# show top rows of the example dataset
+head(varMarkers)
 ```
+
+# 1. Marker overrepresentation analysis
+
+To calculate marker overrepresentation use `markerEnrich` function. It
+automatically provides a database of bone-relevant markers. Results can
+be further dirrectly plotted with an associated `plotMarkerEnrich`
+function, output of which is an editable *ggplot* object.
+
+**Note**: While the default setting of `markerEnrich` use all available
+variable markers per cluster, based on practical experience, more
+reliable results can be achieved by selecting only few top markers by
+setting the parameter *topN* (as shown in the example below). Default
+mode selects the top markers based on log2FC, this can be changed by
+setting the parameter *sortBy="padj* ". Changing the *sortBy*, however,
+usually does not change much.
+
+```{r marker-overrep-top10}
+# run overrepresentation analysis uasing top 10 variable markers (features) per cluster
+ORres = markerEnrich(varMarkers, topN = 10)
+
+# plot the top 5 most significant results
+plotMarkerEnrich(ORres, topN = 5)
+```
+
+The labels on the x-axis contain following information \<cluster number
+\_\_ source database \_\_ cell type\>. Dashed line indicates padj =
+0.05.
+
+Let's now have a look at the format of the `markerEnrich` results.
+
+```{r topRes}
+# show top 2 significant result for each cluster
+topORres = ORres %>% 
+  group_by(cluster) %>% 
+  top_n(n = 2, wt = neg_log10_padj)
+
+topORres
+```
+
+As shown, the output is a table with following variables- *cluster*:
+cluster number / *cellType*: cell type / *database*: source database
+from which markers originate / *p*: p-value / *oddsRatio*: odds ratio /
+*n_olaps*: number of overlap between variable markers (features) and the
+marker database / *overlaps*: list of individual overlapping markers /
+*padj*: adjusted p-value /*neg_log10_padj*: -log10(padj).
+
+**Recommendation:** Try few different settings of the `markerEnrich`
+function try different *topN*, *sortBy* arguments. In general I wouldn't
+set the *byDatabase* to FALSE, as the TISSUES database has relatively a
+lot of markers (some of which I am not too sure about) and it can skew
+the results. But overall I definitely recommend to explore the whole
+result table, to see which markers drive associated results and if that
+cell type assignment then makes sense.
+
+# 2. Gene (marker) set enrichment analysis
