@@ -27,5 +27,6 @@ varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
                             package = "BoneCellType")
 varMarkers = read.csv(varMarkerFile)
 enrichRes = markerGSEA(varMarkers)
-plotMarkerGSEA(enrichRes)
+\dontrun{
+plotMarkerGSEA(enrichRes)}
 }

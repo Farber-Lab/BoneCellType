@@ -28,3 +28,4 @@ Suggests:
 LazyData: true
 License: MIT + file LICENSE
 VignetteBuilder: knitr
+URL: https://farber-lab.github.io/BoneCellType/

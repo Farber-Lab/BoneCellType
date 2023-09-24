@@ -24,5 +24,6 @@ varMarkerFile = system.file("extdata", "cluster_variable_features.csv",
                             package = "BoneCellType")
 varMarkers = read.csv(varMarkerFile)
 enrichRes = markerEnrich(varMarkers)
-plotMarkerEnrich(enrichRes)
+\dontrun{
+plotMarkerEnrich(enrichRes)}
 }

@@ -2,11 +2,7 @@
 title: "BoneCellType: R package for bone-relevant cell type assignment"
 author: Kristyna Kupkova
 date: "`r Sys.Date()`"
-#output: rmarkdown::html_vignette
-output: 
-  prettydoc::html_pretty:
-    theme: hpstr
-    toc: true
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{BoneCellType: R package for bone-relevant cell type assignment}
