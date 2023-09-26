@@ -2,7 +2,13 @@
 title: "BoneCellType: R package for bone-relevant cell type assignment"
 author: Kristyna Kupkova
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  html_document:
+    toc: true # table of content true
+    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    theme: united  # many options for theme, this one is my favorite.
+    highlight: kate
+    df_print: paged
 vignette: >
   %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{BoneCellType: R package for bone-relevant cell type assignment}
@@ -192,6 +198,145 @@ options to customize provided functions.
 
 ## a. Provide custom set of markers
 
+As part pf the package we provide a set of bone-related markers. The
+inputs to overrepresentation analysis vs. GSEA analysis have slightly
+different format (*data.frame* vs. *list*, respectively). So let's have
+a look at what format are the inputs and how do we provide those to both
+functions from this package.
+
+### a.1 Markers for overrepresentation analysis
+
+The marker database provided in this package for overrepresentation
+analysis can be accessed in following way:
+
+```{r overrepMarkers}
+# access set of markers
+markerDatabase = markerDatabase
+
+# view variables in the markerDatabase data.frame
+head(markerDatabase)
+```
+
+If you want to provide your own set of markers, the *data.frame* must
+have all following columns: *tissue, cellType, gene, database*. Each row
+must contain only one gene (i.e. marker). Let's now have a look how to
+use the markerDatabase object in the overrepresentation analysis with
+`markerEnrich`.
+
+```{r overrepCutomMarkers, fig.width=6, fig.height=6}
+# run overrepresentation analysis uasing top 10 variable markers (features) per cluster
+ORres2 = markerEnrich(varMarkers = varMarkers, markerDB = markerDatabase, topN = 10)
+
+# plot the top 5 most significant results
+plotMarkerEnrich(ORres2, topN = 5)
+```
+
+Using the input in this way allows us to for example filter out markers
+coming from sources we might not trust as much. Let's say we would like
+to omit markers coming from *CellMarker2_mouse_sc* database (source).
+Let's have a look how to do that.
+
+```{r overrepFilter, fig.width=6, fig.height=6}
+# filter out markers originating from CellMarker2_mouse source
+filtDB = markerDatabase %>% 
+  dplyr::filter(database != "CellMarker2_mouse_sc")
+  
+# pass the filtered set of markers to overrepresentation analysis
+ORresFilt = markerEnrich(varMarkers = varMarkers, markerDB = filtDB, topN = 10)
+
+# plot the top 5 most significant results
+plotMarkerEnrich(ORresFilt, topN = 5)
+```
+
+As you can see, cell types from *CellMarker2_mouse_sc* are not reported
+in the results, since the markers were filtered out.
+
+### a.2 Markers for GSEA analysis
+
+Marker input to the GSEA analysis is in form of a named *list*. The
+names correspond to a given set and the content of the given set is a
+string vector containing given markers. There are 4 marker sets included
+in this package, let's have a look at them.
+
+1.  **List with cell type specific markers merged from multiple source
+    databases**
+
+```{r GSEAcellMarkers}
+# access set of cell type markers (merged from multiple source databases)
+cellType_list = cellType_list
+
+# view contents (maximum 6 markers per sublist)
+headList(cellType_list)
+```
+
+2.  **List with tissue specific markers merged from multiple source
+    databases**
+
+```{r GSEAtissueMarkers}
+# access set of tissue markers (merged from multiple source databases)
+tissue_list = tissue_list
+
+# view contents (maximum 6 markers per sublist)
+headList(tissue_list)
+```
+
+3.  **List with cell type specific markers separated by source
+    database**
+
+```{r GSEAcellSourceMarkers}
+# access set of cell type markers separated by source
+cellTypeSource_list = cellTypeSource_list
+
+# view contents (maximum 6 markers per sublist)
+headList(cellTypeSource_list)
+```
+
+4.  **List with cell type specific markers merged from multiple source
+    databases**
+
+```{r GSEAtissueSourceMarkers}
+# access set of tissue markers separated by source
+tissueSource_list = tissueSource_list
+
+# view contents (maximum 6 markers per sublist)
+headList(tissueSource_list)
+```
+
+Now let's pass a selected set of markers to the markerGSEA function.
+**Note:** once you provide your list of markers to the *markers*
+variable, *systemLevel* and *byDatabase* options will not do anything
+anymore. You have to create your list according to your needs.
+
+```{r marker-GSEA-custom, fig.width=6, fig.height=6}
+# run GSEA with your set of markers
+GSEAcellTypeSource = markerGSEA(varMarkers = varMarkers, markers = cellTypeSource_list)
+
+# plot NES of the top 5 most significant results
+plotMarkerGSEA(GSEAcellTypeSource, topN = 5, plotNES = TRUE)
+```
+
 ## b. Edit generated plots
 
-## 
+The outputs of the plotting functions are editable *ggplot* objects that
+you can adjust to your liking. Let's have a look how to do that.
+
+First let's generate the default plot.
+
+```{r marker-overrep, fig.width=6, fig.height=6}
+# run overrepresentation analysis uasing top 10 variable markers (features) per cluster
+ORres = markerEnrich(varMarkers, topN = 10)
+
+# plot the top 5 most significant results
+p = plotMarkerEnrich(ORres, topN = 5)
+p
+```
+
+Let's now change the color scheme and add a plot title.
+
+```{r edit plot, fig.width=6, fig.height=6}
+library(viridisLite)
+p = p + 
+  scale_fill_viridis_c(option = "D", direction = -1) +
+  ggtitle("Bone cell type overrepresentation analysis")
+p
+```
