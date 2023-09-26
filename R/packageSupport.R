@@ -9,6 +9,7 @@
 #' @importFrom utils globalVariables
 #' @importFrom fgsea fgsea
 #' @importFrom klippy klippy
+#' @importFrom utils head
 
 
 # Because of some issues with NOTEs on R CMD check and CRAN submission,

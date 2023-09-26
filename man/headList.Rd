@@ -5,7 +5,7 @@
 \title{Return the first or last part of a list (from
 https://gist.github.com/pimentel/256fc8c9b5191da63819)}
 \usage{
-headList(obj, n = 6L, ...)
+headList(obj, n = 6L)
 }
 \arguments{
 \item{obj}{a list object}

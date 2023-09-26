@@ -12,7 +12,7 @@
 #' @return a list of length n, with items in the list of length n
 #'
 #' @export
-headList = function(obj, n = 6L, ...)
+headList = function(obj, n = 6L)
 {
   stopifnot(length(n) == 1L)
   origN = n
@@ -22,7 +22,7 @@ headList = function(obj, n = 6L, ...)
   lapply(obj[seq_len(n)], function(x)
   {
     tryCatch({
-      head(x, origN, ...)
+      head(x, origN)
     }, error = function(e) {
       x
     })
