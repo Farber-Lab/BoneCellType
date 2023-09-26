@@ -25,7 +25,8 @@ Imports:
 Suggests:
     rmarkdown,
     knitr,
-    prettydoc
+    prettydoc,
+    viridisLite
 Remotes:
     rlesur/klippy
 LazyData: true

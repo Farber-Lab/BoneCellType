@@ -10,8 +10,9 @@
 #' list and all entries in the list. If negative, prints all but the last
 #' n items in the list.
 #' @return a list of length n, with items in the list of length n
+#'
 #' @export
-head.list = function(obj, n = 6L, ...)
+headList = function(obj, n = 6L, ...)
 {
   stopifnot(length(n) == 1L)
   origN = n
