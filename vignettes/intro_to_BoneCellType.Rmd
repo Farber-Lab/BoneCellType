@@ -6,8 +6,8 @@ output:
   html_document:
     toc: true # table of content true
     toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
-    theme: united  # many options for theme, this one is my favorite.
-    highlight: kate
+    theme: flatly # many options for theme, this one is my favorite.
+    highlight: pygments
     df_print: paged
 vignette: >
   %\VignetteEncoding{UTF-8}
@@ -34,9 +34,6 @@ klippy::klippy(position = "right")
 # These settings make the vignette prettier
 knitr::opts_chunk$set(results="hold", collapse=FALSE, message=FALSE, 
                       warning = FALSE)
-#refreshPackage("GenomicDistributions")
-#devtools::build_vignettes("code/GenomicDistributions")
-#devtools::test("code/GenomicDistributions")
 ```
 
 # Introduction to BoneCellType
